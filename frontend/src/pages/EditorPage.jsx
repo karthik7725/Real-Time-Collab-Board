@@ -36,6 +36,8 @@ function EditorPage() {
   const [messages, setMessages] = useState([]);
   const [currentTab, setCurrentTab] = useState("code");
 
+  const [notInvite, setNotInvite] = useState(false);
+
   const handleEditorChange = (value) => {
     socketRef.current.emit(ACTIONS.CODE_CHANGE, { roomId, code: value });
     setEditorContent(value);
@@ -79,6 +81,15 @@ function EditorPage() {
       socketRef.current.emit(ACTIONS.JOIN, {
         roomId,
         username: currentUsername,
+      });
+
+      socketRef.current.on("join-status", ({ status, message }) => {
+        if (status === "error") {
+          console.log("hi");
+          setNotInvite(true);
+          navigate("/", { replace: true });
+          toast.error(message);
+        }
       });
 
       // Listening for joined event
@@ -209,20 +220,20 @@ function EditorPage() {
     }
   }
 
-  const blocker = useCallback(() => {
-    // Display a dialog box to the user.
-    var message = "Are you sure you want to leave this page?";
-    var result = window.confirm(message);
+  // const blocker = useCallback(() => {
+  //   // Display a dialog box to the user.
+  //   var message = "Are you sure you want to leave this page?";
+  //   var result = window.confirm(message);
 
-    // If the user clicks on the "Cancel" button, prevent the browser from navigating away from the page.
-    return !result;
-  }, []);
+  //   // If the user clicks on the "Cancel" button, prevent the browser from navigating away from the page.
+  //   return !result;
+  // }, []);
 
-  useBlocker(blocker);
+  // useBlocker(blocker);
 
   return (
     <div>
-      {showLoader && <CodeboardLoader />}
+      {showLoader && <CodeboardLoader notInvite={notInvite} />}
       {showModal && <NameModal handleJoinClick={handleModalJoinClick} />}
       <div className="flex">
         {!showModal && (
@@ -267,7 +278,7 @@ function EditorPage() {
 
 export default EditorPage;
 
-function CodeboardLoader() {
+function CodeboardLoader({ notInvite }) {
   return (
     <div className="absolute z-50 w-screen h-screen overflow-y-hidden opacity-95 bg-white-300 backdrop-blur-sm bg-opacity-10">
       <div className="fixed z-50 flex flex-col items-center w-full top-[40%] gap-2 font-Montserrat">
@@ -275,11 +286,19 @@ function CodeboardLoader() {
           className="h-12 w-12 animate-spin rounded-full border-[6px] border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
           role="status"
         ></div>
-        <span className="text-[14px] font-mono w-max text-center">
-          Connecting to server.
-          <br />
-          Please wait...
-        </span>
+        {notInvite ? (
+          <span className="text-[14px] font-mono w-max text-center">
+            You are not invited to this room.
+            <br />
+            Please ask your room host to invite you.
+          </span>
+        ) : (
+          <span className="text-[14px] font-mono w-max text-center">
+            Connecting to server.
+            <br />
+            Please wait...
+          </span>
+        )}
       </div>
     </div>
   );

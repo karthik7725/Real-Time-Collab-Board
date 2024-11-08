@@ -3,12 +3,13 @@ import { LiaUserFriendsSolid } from "react-icons/lia";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { FaCode } from "react-icons/fa";
+import { BiUserPlus } from "react-icons/bi";
 import { useEffect, useRef, useState } from "react";
 import ViewMembers from "./ViewMembers";
 import Chat from "./Chat";
 import Settings from "./Settings";
 import Poll from "./Poll";
-
+import Invite from "./Invite";
 function Navbar({
   socketRef,
   messages,
@@ -71,6 +72,17 @@ function Navbar({
     }
     handleTabClick(icon);
   }
+  // Handle invite icon click
+  function handleInviteClick(icon) {
+    if (showSidebar && lastClickedIcon === icon) {
+      setShowSidebar(false);
+      setLastClickedIcon(null);
+    } else {
+      setShowSidebar(true);
+      setLastClickedIcon(icon);
+    }
+    handleTabClick(icon);
+  }
 
   return (
     <div className="  flex">
@@ -113,6 +125,13 @@ function Navbar({
           } scale-[2] `}
           onClick={() => handlePollClick("poll")}
         />
+        {/* Invite Icon */}
+        <BiUserPlus
+          className={`${
+            lastClickedIcon === "invite" && "text-white scale-[2.2]"
+          } scale-[2] `}
+          onClick={() => handleInviteClick("invite")}
+        />
       </div>
 
       <div
@@ -126,6 +145,8 @@ function Navbar({
           <Chat socketRef={socketRef} messagesArray={messages} />
         )}
         {lastClickedIcon === "poll" && <Poll socketRef={socketRef} />}
+        {lastClickedIcon === "invite" && <Invite socketRef={socketRef} />}{" "}
+        {/* Render Invite Component */}
       </div>
     </div>
   );

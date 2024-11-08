@@ -13,6 +13,7 @@ const io = new Server(server, {
 
 const userSocketMap = {};
 const roomData = {};
+let invitedMembers = {};
 
 function getAllConnectedClients(roomId) {
   return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
@@ -41,6 +42,21 @@ io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
 
   socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
+
+    //check if the room exists in invitedMembers
+    if(!invitedMembers[roomId]){
+      invitedMembers[roomId] = [];
+    }
+    if(invitedMembers[roomId].length === 0){
+      invitedMembers[roomId].push(username); //add the first user as invited member
+    }
+    //validate if the username is in the invitedMembers list or not else return
+    if(!invitedMembers[roomId].includes(username)){
+      socket.emit("join-status",{status:"error",message:"You are not invited."});
+      return;
+    }
+
+
     if (!roomData[roomId]) {
       code = `function sayHello() {
         console.log("Hello, World!");
@@ -161,6 +177,32 @@ io.on("connection", (socket) => {
         io.to(roomId).emit(ACTIONS.POLL_UPDATE, roomData[roomId].pollData);
         socket.in(roomId).emit("poll-update-username",{username:userSocketMap[socket.id]});
       });
+
+       // invite events will be added here
+
+        socket.on("add-invite",({roomId,username})=>{
+          if(!invitedMembers[roomId]){
+            invitedMembers[roomId] = [];
+          }
+          console.log("event receiving");
+          if(!invitedMembers[roomId].includes(username)){
+            invitedMembers[roomId].push(username);
+            socket.emit("invite-status",{ status : "success"});
+          }
+          else{
+            socket.emit("invite-status",{status : "error"});
+          }
+        });
+
+
+
+
+
+
+
+
+
+
 
 
 
