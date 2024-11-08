@@ -12,4 +12,6 @@ GROUP CHAT SERVICE👇
 LIVE POLLLING 👇
 ![5](https://github.com/user-attachments/assets/0e7f18ea-61ab-4ac6-8a80-82b2b9fabf51)
 
+ONLINE INVITEES CAN JOIN (PRIVATE ROOMS)👇 
+![invite](https://github.com/user-attachments/assets/79312517-5780-4ff2-8bdb-4ffee6acd506)
 
