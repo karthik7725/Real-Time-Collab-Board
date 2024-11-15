@@ -1,3 +1,9 @@
+DESIGN AND WORKFLOW OF THE PROJECT : 
+
+![image](https://github.com/user-attachments/assets/bd998e0c-9b38-4664-ab41-0dc04d81a300)
+
+
+
 COLORFUL WHITEBOARD 👇
 ![1](https://github.com/user-attachments/assets/0953d946-3bc8-422a-9cf5-8e18e6e4d333)
 CODEBOARD 👇
